@@ -278,6 +278,6 @@ def mainf(pathtoimg,outpath):
     
     # сохранить картинкой в путь на выход!!!!!!!!!!!
     plt.imshow(my_photohel3)
-    plt.show()
+    plt.savefig(outpath, bbox_inches='tight')
 
 #def main2f(pathtoimg, pathtosaveimg, point1cord = (долгота,широта),point2cord = (долгота,широта))

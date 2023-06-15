@@ -84,7 +84,7 @@ def rgbToHSV(r, g, b):
     v = mx*100
     return h, s, v
 
-my_photo1 = plt.imread(r'C:\Users\loinos\Desktop\референсы города освещение\1.jpg')
+my_photo1 = plt.imread(r'C:\Users\loinos\Desktop\референсы города освещение\10.jpg')
 
 
 my_photo = my_photo1.copy()
@@ -162,7 +162,7 @@ for i in contours:
         cv.circle(my_photohel, (cx, cy), 7, (255, 0, 0), -1)
 
 
-my_photohel2 = plt.imread(r'C:\Users\loinos\Desktop\референсы города освещение\1.jpg')
+my_photohel2 = plt.imread(r'C:\Users\loinos\Desktop\референсы города освещение\10.jpg')
 # imd = cv.add(my_photo1,fig)
 
 
@@ -339,7 +339,7 @@ def to_edges(hel):
         yield last, current
         last = current    
 
-my_photohel3 = plt.imread(r'C:\Users\loinos\Desktop\референсы города освещение\1.jpg')
+my_photohel3 = plt.imread(r'C:\Users\loinos\Desktop\референсы города освещение\10.jpg')
 pp =[]
 G = to_graph(hel)
 for i in connected_components(G):
@@ -358,7 +358,10 @@ for i in connected_components(G):
         cy = int(moments['m01'] / moments['m00'])
     my_photohel3 = cv.putText(my_photohel3, str(brr) ,(cx, cy), cv.FONT_HERSHEY_SIMPLEX,1, (255,0,0), 2, cv.LINE_AA)
 plt.imshow(my_photohel3)
+plt.savefig(r'C:\Users\loinos\Desktop\референсы города освещение\123.png', bbox_inches='tight')
 plt.show()
+
+
 
     # list_of_pts = [] 
     # for ctr in hpp:
