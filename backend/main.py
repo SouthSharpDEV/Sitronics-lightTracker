@@ -4,6 +4,7 @@ from os import listdir
 from os.path import isfile, join
 import json
 import aiofiles
+from typing import List
 
 
 app = FastAPI()
@@ -22,9 +23,9 @@ async def getMedia(imageName:str):
     return FileResponse(path='./raw/{}'.format(imageName), filename=imageName, media_type='image/jpeg')
 
 @app.post("/uploadfile/")
-async def create_upload_file(file: UploadFile):
+async def create_upload_file(file: UploadFile, coordX: List[str], coordY: List[str] ):
     async with aiofiles.open('./raw/{0}'.format(file.filename), 'wb') as out_file:
-        content = await file.read()  # async read
-        await out_file.write(content)  # async write
+        content = await file.read()
+        await out_file.write(content)
 
     return {"Result": "OK"}
