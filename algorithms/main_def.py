@@ -9,57 +9,10 @@ from skimage.morphology import binary_opening, disk
 import colorsys
 from scipy.spatial import Voronoi, voronoi_plot_2d
 from scipy.spatial import Delaunay
+import networkx 
+from networkx.algorithms.components.connected import connected_components
 
-# class clockwise_angle_and_distance():
-#     '''
-#     A class to tell if point is clockwise from origin or not.
-#     This helps if one wants to use sorted() on a list of points.
-
-#     Parameters
-#     ----------
-#     point : ndarray or list, like [x, y]. The point "to where" we g0
-#     self.origin : ndarray or list, like [x, y]. The center around which we go
-#     refvec : ndarray or list, like [x, y]. The direction of reference
-
-#     use: 
-#         instantiate with an origin, then call the instance during sort
-#     reference: 
-#     https://stackoverflow.com/questions/41855695/sorting-list-of-two-dimensional-coordinates-by-clockwise-angle-using-python
-
-#     Returns
-#     -------
-#     angle
-    
-#     distance
-    
-
-#     '''
-#     def __init__(self, origin):
-#         self.origin = origin
-
-#     def __call__(self, point, refvec = [0, 1]):
-#         if self.origin is None:
-#             raise NameError("clockwise sorting needs an origin. Please set origin.")
-#         # Vector between point and the origin: v = p - o
-#         vector = [point[0]-self.origin[0], point[1]-self.origin[1]]
-#         # Length of vector: ||v||
-#         lenvector = np.linalg.norm(vector[0] - vector[1])
-#         # If length is zero there is no angle
-#         if lenvector == 0:
-#             return -pi, 0
-#         # Normalize vector: v/||v||
-#         normalized = [vector[0]/lenvector, vector[1]/lenvector]
-#         dotprod  = normalized[0]*refvec[0] + normalized[1]*refvec[1] # x1*x2 + y1*y2
-#         diffprod = refvec[1]*normalized[0] - refvec[0]*normalized[1] # x1*y2 - y1*x2
-#         angle = atan2(diffprod, dotprod)
-#         # Negative angles represent counter-clockwise angles so we need to 
-#         # subtract them from 2*pi (360 degrees)
-#         if angle < 0:
-#             return 2*pi+angle, lenvector
-#         # I return first the angle because that's the primary sorting criterium
-#         # but if two vectors have the same angle then the shorter distance 
-#         # should come first.
-#         return angle, lenvector
+pathtoimg = r'C:\Users\loinos\Desktop\референсы города освещение\1.jpg'
 
 def hsvToRGB(h, s, v):
     return tuple(round(i * 255) for i in colorsys.hsv_to_rgb(h,s,v))
@@ -84,7 +37,28 @@ def rgbToHSV(r, g, b):
     v = mx*100
     return h, s, v
 
-my_photo1 = plt.imread(r'C:\Users\loinos\Desktop\референсы города освещение\1.jpg')
+def to_graph(hel):
+    G = networkx.Graph()
+    for part in hel:
+        # each sublist is a bunch of nodes
+        G.add_nodes_from(part)
+        # it also imlies a number of edges:
+        G.add_edges_from(to_edges(part))
+    return G
+
+def to_edges(hel):
+    """ 
+        treat `l` as a Graph and returns it's edges 
+        to_edges(['a','b','c','d']) -> [(a,b), (b,c),(c,d)]
+    """
+    it = iter(hel)
+    last = next(it)
+
+    for current in it:
+        yield last, current
+        last = current
+
+my_photo1 = plt.imread(pathtoimg)
 
 
 my_photo = my_photo1.copy()
@@ -123,16 +97,6 @@ for i in range(0, my_photo.shape[0]): # We go over rows number
         else :#(hcv[2]<=40):
             # hcv1=colorsys.hsv_to_rgb(120,0,0)
             my_photo[i,j] = [0,0,0]#[hcv1[0],hcv1[1],hcv1[2]]
-
-
-# fig, ax = plt.subplots(1, 2, figsize=(20, 10))
-# ax[0].imshow(my_photo1)
-# ax[0].set_title('Original image')
-# ax[1].imshow(my_photo)
-# ax[1].set_title('Dark regions')
-# plt.show()
-
-
 my_photohel = my_photo.copy()
 
 
@@ -162,28 +126,7 @@ for i in contours:
         cv.circle(my_photohel, (cx, cy), 7, (255, 0, 0), -1)
 
 
-my_photohel2 = plt.imread(r'C:\Users\loinos\Desktop\референсы города освещение\1.jpg')
-# imd = cv.add(my_photo1,fig)
-
-
-
-
-# vor = Voronoi(points)
-
-# fig = voronoi_plot_2d(vor)
-# imd = cv.add(my_photo1,fig)
-# plt.gca().invert_yaxis()
-# plt.imshow(my_photohel2)
-# plt.show()
-
-# fig, ax = plt.subplots(1, 2, figsize=(20, 10))
-# ax[0].imshow(my_photohel)
-# ax[0]
-# ax[0].set_title('Original image')
-# ax[1].imshow(img_contours)
-# ax[1].set_title('Dark regions')
-# plt.show()
-
+my_photohel2 = plt.imread(pathtoimg)
 img = my_photo.copy()
 img_gray = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
 ret,thresh_img = cv.threshold(img_grey, 100, 255, cv.THRESH_TOZERO)
@@ -339,7 +282,7 @@ def to_edges(hel):
         yield last, current
         last = current    
 
-my_photohel3 = plt.imread(r'C:\Users\loinos\Desktop\референсы города освещение\1.jpg')
+my_photohel3 = plt.imread(pathtoimg)
 pp =[]
 G = to_graph(hel)
 for i in connected_components(G):
@@ -359,47 +302,3 @@ for i in connected_components(G):
     my_photohel3 = cv.putText(my_photohel3, str(brr) ,(cx, cy), cv.FONT_HERSHEY_SIMPLEX,1, (255,0,0), 2, cv.LINE_AA)
 plt.imshow(my_photohel3)
 plt.show()
-
-    # list_of_pts = [] 
-    # for ctr in hpp:
-    #     list_of_pts += [pt[0] for pt in ctr]
-    
-    # center_pt = np.array(list_of_pts).mean(axis = 0) # get origin
-    # clock_ang_dist = clockwise_angle_and_distance(center_pt) # set origin
-    # list_of_pts = sorted(list_of_pts, key=clock_ang_dist)
-    # ctr = np.array(list_of_pts).reshape((-1,1,2)).astype(np.int32)
-    # print(ctr)
-    # print("--------")
-    # cv.drawContours(my_photohel2,ctr,-1,(0,0,255),2)
-    # plt.imshow(my_photohel2)
-    # plt.show()
-
-
-
-
-
-# contours = []
-# for i in tri.simplices:
-#     L = [points[i[0]],points[i[1]],points[i[2]]]
-#     ctr = np.array(L).reshape((-1,1,2)).astype(np.int32)
-#     contours.append(ctr)
-# cv.drawContours(my_photohel2,contours,-1,(0,255,0),2)
-# plt.imshow(my_photohel2)
-# plt.show()
-
-# i = 0
-# for contour in contours:
-#     # Нахождение координат центра контура
-#     moments = cv.moments(contour)
-#     if moments['m00'] != 0:
-#         cx = int(moments['m10'] / moments['m00'])
-#         cy = int(moments['m01'] / moments['m00'])
-#     my_photohel2 = cv.putText(my_photohel2, str(br[i]) ,(cx, cy), cv.FONT_HERSHEY_SIMPLEX,1, (255,0,0), 2, cv.LINE_AA)
-#     i+=1
-
-# plt.imshow(my_photohel2)
-# plt.show()
-
-
-
-
