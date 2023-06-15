@@ -12,8 +12,10 @@ export const HomePage:() => React.JSX.Element = (): React.JSX.Element => {
         <Typography style={{ color: 'white', fontSize: '20px', marginBottom: '15px' }}>Координаты снимка</Typography>
         <div style={{ marginBottom: '15px' }}>
             <TextField id="outlined-basic" label="X координата" variant="outlined" style={{ backgroundColor: '#FFFFFF' }} />
+            <TextField id="outlined-basic" label="Y координата" variant="outlined" style={{ backgroundColor: '#FFFFFF' }} />
         </div>
         <div>
+            <TextField id="outlined-basic" label="X координата" variant="outlined" style={{ backgroundColor: '#FFFFFF' }} />
             <TextField id="outlined-basic" label="Y координата" variant="outlined" style={{ backgroundColor: '#FFFFFF' }} />
         </div>
         <Button variant="contained" style={{ width: '154px', backgroundColor: '#760EDE', marginTop: '30px' }}>Отправить</Button>
