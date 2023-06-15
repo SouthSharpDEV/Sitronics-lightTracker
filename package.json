@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "mui-file-input": "^2.0.0",
+    "react-helmet": "^6.1.0"
+  }
+}
