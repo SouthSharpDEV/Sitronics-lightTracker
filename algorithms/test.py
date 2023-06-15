@@ -32,7 +32,7 @@ def rgbToHSV(r, g, b):
     v = mx*100
     return h, s, v
 
-my_photo1 = plt.imread(r'C:\Users\loinos\Desktop\референсы города освещение\10.jpg')
+my_photo1 = plt.imread(r'C:\Users\coolm\OneDrive\Рабочий стол\City and Color\photo_2023-05-19_21-14-13.jpg')
 
 
 my_photo = my_photo1.copy()
@@ -106,11 +106,11 @@ for i in contours:
     if M['m00'] != 0:
         cx = int(M['m10']/M['m00'])
         cy = int(M['m01']/M['m00'])
-        points.append([cx,cy])
+        points.append((cx,cy))
         cv.circle(my_photohel, (cx, cy), 7, (255, 0, 0), -1)
 
 
-my_photohel2 = plt.imread(r'C:\Users\loinos\Desktop\референсы города освещение\10.jpg')
+my_photohel2 = plt.imread(r'C:\Users\coolm\OneDrive\Рабочий стол\City and Color\photo_2023-05-19_21-14-13.jpg')
 # imd = cv.add(my_photo1,fig)
 
 
@@ -136,6 +136,16 @@ img = my_photo.copy()
 img_gray = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
 ret,thresh_img = cv.threshold(img_grey, 100, 255, cv.THRESH_TOZERO)
 
+# размеры картинки
+height, width, _ = img.shape
+
+# задание размера квадратной области
+N = 40
+
+# разбивка на квадратные области
+tiles = [img[x:x+N, y:y+N] for x in range(0, height, N) for y in range(0, width, N)]
+
+
 #find contours
 contours, hierarchy = cv.findContours(thresh_img, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
 points =[]
@@ -148,11 +158,27 @@ for count in contours:
     
     cv.drawContours(img, [approximations], -1, (255,255,255), 3)
 # print (points)
-
+# группировка точек по квадратным областям и нахождение среднего значения
+grouped_points = {}
+for idx, tile in enumerate(tiles):
+    # координаты квадратной области
+    x, y = (idx % (width // N)) * N, (idx // (width // N)) * N
+    # проверка, входят ли точки в данную квадратную область
+    x_sum, y_sum, count = 0, 0, 0
+    for point in points:
+        if x <= point[0] < x + N and y <= point[1] < y + N:
+            # добавление точки в соответствующую группу
+            x_sum += point[0]
+            y_sum += point[1]
+            count += 1
+    if count > 0:
+        grouped_points[idx] = (x_sum/count, y_sum/count)
 # plt.gca().invert_yaxis()
 # plt.imshow(img)
 # plt.show()
 # cv.imshow('img',img)
+points = [grouped_points[i] for i in grouped_points]
+
 from scipy.spatial import Delaunay
 points2 = np.array(points)
 # print(len(points2))
