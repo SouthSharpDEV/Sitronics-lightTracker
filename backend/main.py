@@ -29,7 +29,7 @@ async def read_root():
 
 @app.get('/media/')
 async def getMedia(imageName:str):
-    return FileResponse(path='./result/{}'.format(imageName), filename=imageName, media_type='image/jpeg')
+    return FileResponse(path='./result/final_{}'.format(imageName), filename=imageName, media_type='image/jpeg')
 
 @app.get('/test')
 async def getMedia():
@@ -43,5 +43,6 @@ async def create_upload_file(file: UploadFile, coordX: List[str], coordY: List[s
     async with aiofiles.open('./raw/{0}'.format(file.filename), 'wb') as out_file:
         content = await file.read()
         await out_file.write(content)
+    mainf('./raw/{}'.format(file.filename), './result/final_{}'.format(file.filename))
 
     return {"Result": "OK"}
