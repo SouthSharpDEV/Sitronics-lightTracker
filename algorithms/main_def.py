@@ -544,6 +544,3 @@ def main2f(pathtoimg,outpath,point1,point2):
     # сохранить картинкой в путь на выход!!!!!!!!!!!
     # plt.imshow(my_photohel3)
     # plt.show()
-
-main2f(r'C:\Users\coolm\OneDrive\Рабочий стол\City and Color\photo_2023-05-19_21-14-15.jpg','',
-       (47.243956, 39.718495),(47.236604, 39.706176))
