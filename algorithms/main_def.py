@@ -280,26 +280,14 @@ def mainf(pathtoimg,outpath):
     # сохранить картинкой в путь на выход!!!!!!!!!!!
     plt.imshow(my_photohel3)
     plt.show()
-
+from math import ceil
 #def main2f(pathtoimg, pathtosaveimg, point1cord = (долгота,широта),point2cord = (долгота,широта))
-def convert_coordinates(x, y, lat1, lon1, lat2, lon2, img_width, img_height):
-    # вычисляем разницу между широтами и долготами
-    dlat = lat2 - lat1
-    dlon = lon2 - lon1
+def image_point_to_map(x, y, lat1, lon1, lat2, lon2, img_width, img_height):
+    map_x = ((lon2 - lon1) * x / img_width) + lon1
+    map_y = lat1 - ((lat1 - lat2) * y / img_height)
 
-    # вычисляем ширину и высоту изображения в градусах
-    img_lat_range = dlat * (img_height / img_width)
-    img_lon_range = dlon
+    return map_x, map_y
 
-    # конвертируем x и y из пиксельных координат в интервал от 0 до 1
-    x_norm = x / img_width
-    y_norm = y / img_height
-
-    # конвертируем x_norm и y_norm из интервала от 0 до 1 в интервал от lat1 до lat2 и lon1 до lon2 соответственно
-    lat = lat1 + (y_norm * img_lat_range)
-    lon = lon1 + (x_norm * img_lon_range)
-
-    return lat, lon
 
 def main2f(pathtoimg,outpath,point1,point2):
     my_photo1 = plt.imread(pathtoimg)
@@ -519,7 +507,7 @@ def main2f(pathtoimg,outpath,point1,point2):
             print(point)
             x=point[0][0]
             y=point[0][1]
-            lat, lon = convert_coordinates(x, y, point1[0], point1[1], point2[0], point2[1], width, height)
+            lat, lon = image_point_to_map(x, y, point1[0], point1[1], point2[0], point2[1], width, height)
             hull_lat_lon.append((lat, lon))
 
        # Создание объекта MultiPolygon для текущей области (hull_lat_lon)
@@ -550,7 +538,7 @@ def main2f(pathtoimg,outpath,point1,point2):
 
     # Преобразование объекта FeatureCollection в GEOJson-строку
     geojson_str = geojson.dumps(feature_collection)
-    print(geojson_str)
+    
     
     return geojson_str #!!!!!!!!!!! GEOJSON STRING 
     # сохранить картинкой в путь на выход!!!!!!!!!!!
