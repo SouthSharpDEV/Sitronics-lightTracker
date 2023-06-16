@@ -6,6 +6,7 @@ from os.path import isfile, join
 import json
 import aiofiles
 from typing import List
+from algorithms.main_def import mainf
 
 
 app = FastAPI()
@@ -28,7 +29,11 @@ async def read_root():
 
 @app.get('/media/')
 async def getMedia(imageName:str):
-    return FileResponse(path='./raw/{}'.format(imageName), filename=imageName, media_type='image/jpeg')
+    return FileResponse(path='./result/{}'.format(imageName), filename=imageName, media_type='image/jpeg')
+
+@app.get('/test')
+async def getMedia():
+    mainf('./raw/test.jpg', './result/result.png')
 
  
 
