@@ -8,26 +8,60 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
+import {saveAs} from "file-saver";
+
+
+import axios from 'axios'
 
 function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
+  id: number,
+  createdAt: string,
+  X: string[],
+  Y: string[],
+  lightGrade: number,
+  fileName: string
 ) {
-  return { name, calories, fat, carbs, protein };
+  return { id, createdAt, X, Y, lightGrade, fileName };
 }
 
+
+//@ts-ignore
 const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
+  // createData(1, 'now', ['1', '1'], ['1', '1'], 4.0),
+  
 ];
 
 export default function BasicTable() {
+  const [data, setData] = React.useState([])
+
+  const fetchData = async () => {
+    const data = await axios.get('http://localhost:8000/')
+    setData(data.data)
+  }
+
+  React.useEffect(() => {
+    fetchData()
+  }, [])
+  
+  React.useEffect(() => {
+    if (data.length !== 0) {
+      data.map((data) => {
+        //@ts-ignore
+        rows.push(createData(data.id, data.createdAt, data.X, data.Y, data.lightGrade, data.fileName))
+      })
+    }
+  }, [data])
+
+  const downloadButtonHandler = async (imageName: string) => {
+    let url = `http://localhost:8000/media/?imageName=${imageName}`
+    saveAs(url, "Twitter-logo");
+  }
+
+  if (data.length === 0) {
+    return (
+      <h1>Loading...</h1>
+    )
+  }
   return (
     <TableContainer component={Paper} style={{ backgroundColor: '#111318' }}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -38,29 +72,33 @@ export default function BasicTable() {
             <TableCell align="right" style={{ color: 'white' }}>Время</TableCell>
             <TableCell align="right" style={{ color: 'white' }}>Х координата</TableCell>
             <TableCell align="right" style={{ color: 'white' }}>Y координата</TableCell>
+            <TableCell align="right" style={{ color: 'white' }}>Оценка</TableCell>
             <TableCell align="right" style={{ color: 'white' }}></TableCell>
             <TableCell align="right" style={{ color: 'white' }}></TableCell>
 
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {
+          //@ts-ignore
+          rows.map((row) => (
             <TableRow
-              key={row.name}
+              key={row.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row" style={{ color: 'white' }}>
-                {row.name}
+                {row.id}
               </TableCell>
-                <TableCell style={{ color: 'white' }} align="right">{row.calories}</TableCell>
-                <TableCell style={{ color: 'white' }} align="right">{row.fat}</TableCell>
-                <TableCell  style={{ color: 'white' }}align="right">{row.carbs}</TableCell>
-                <TableCell style={{ color: 'white' }} align="right">{row.protein}</TableCell>
+                <TableCell style={{ color: 'white' }} align="right">{row.id}</TableCell>
+                <TableCell style={{ color: 'white' }} align="right">{row.createdAt}</TableCell>
+                <TableCell  style={{ color: 'white' }}align="right">{row.X}</TableCell>
+                <TableCell style={{ color: 'white' }} align="right">{row.Y}</TableCell>
+                <TableCell style={{ color: 'white' }} align="right">{row.lightGrade}</TableCell>
                 <TableCell style={{ color: 'white' }} align="right">
-                    <Button variant="contained" style={{ backgroundColor: '#760EDE'}}>Подробнее</Button>
+                    <Button variant="contained" style={{ backgroundColor: '#760EDE'}} onClick={() => alert(row.fileName)}>Подробнее</Button>
                 </TableCell>
                 <TableCell style={{ color: 'white' }} align="right">
-                    <Button variant="contained" style={{ backgroundColor: '#760EDE'}} startIcon={<DownloadIcon />}/>
+                    <Button onClick={() => downloadButtonHandler(row.fileName)} variant="contained" style={{ backgroundColor: '#760EDE'}} startIcon={<DownloadIcon />}/>
                 </TableCell>
                 
             </TableRow>

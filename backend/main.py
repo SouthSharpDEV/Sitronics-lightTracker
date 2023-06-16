@@ -1,5 +1,6 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from os import listdir
 from os.path import isfile, join
 import json
@@ -8,6 +9,13 @@ from typing import List
 
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 async def read_root():
@@ -22,8 +30,11 @@ async def read_root():
 async def getMedia(imageName:str):
     return FileResponse(path='./raw/{}'.format(imageName), filename=imageName, media_type='image/jpeg')
 
+ 
+
 @app.post("/uploadfile/")
-async def create_upload_file(file: UploadFile, coordX: List[str], coordY: List[str] ):
+async def create_upload_file(file: UploadFile, coordX: List[str], coordY: List[str]):
+    print(coordX)
     async with aiofiles.open('./raw/{0}'.format(file.filename), 'wb') as out_file:
         content = await file.read()
         await out_file.write(content)
