@@ -12,7 +12,7 @@ from scipy.spatial import Delaunay
 import networkx 
 from networkx.algorithms.components.connected import connected_components
 import geojson
-
+import statistics
 
 
 def hsvToRGB(h, s, v):
@@ -267,7 +267,7 @@ def mainf(pathtoimg,outpath):
         for indsp in i:
             hpp.append(contours[indsp])
             brr = br[indsp] #!!!!!!!!титул для полигона
-        
+        pp.append(brr)
         contours_combined = np.vstack(hpp)
         hull = cv.convexHull(contours_combined)# точки контура полигона!!!!!!!!!
         cv.drawContours(my_photohel3,[hull],-1,(0,0,255),2)
@@ -279,15 +279,16 @@ def mainf(pathtoimg,outpath):
     
     # сохранить картинкой в путь на выход!!!!!!!!!!!
     plt.imshow(my_photohel3)
-    plt.show()
+    plt.savefig(outpath, bbox_inches='tight')
+    return statistics.mean(pp)
+
 from math import ceil
 #def main2f(pathtoimg, pathtosaveimg, point1cord = (долгота,широта),point2cord = (долгота,широта))
 def image_point_to_map(x, y, lat1, lon1, lat2, lon2, img_width, img_height):
-    map_x = ((lon2 - lon1) * x / img_width) + lon1
+    map_x = ((-1) * (lon2 - lon1) * x / img_width) + lon2
     map_y = lat1 - ((lat1 - lat2) * y / img_height)
 
     return map_x, map_y
-
 
 def main2f(pathtoimg,outpath,point1,point2):
     my_photo1 = plt.imread(pathtoimg)
@@ -498,13 +499,20 @@ def main2f(pathtoimg,outpath,point1,point2):
         for indsp in i:
             hpp.append(contours[indsp])
             brr = br[indsp] #!!!!!!!!титул для полигона
-        
+        pp.append(brr)
         contours_combined = np.vstack(hpp)
-        hull = cv.convexHull(contours_combined)# точки контура полигона!!!!!!!!! # конвертируем координаты вершин полигона в систему широты и долготы
-
+        hull = cv.convexHull(contours_combined)# точки контура полигона!!!!!!!!!
+        cv.drawContours(my_photohel3,[hull],-1,(0,0,255),2)
+        moments = cv.moments(hull)
+        if moments['m00'] != 0:
+            cx = int(moments['m10'] / moments['m00'])
+            cy = int(moments['m01'] / moments['m00'])
+        my_photohel3 = cv.putText(my_photohel3, str(brr) ,(cx, cy), cv.FONT_HERSHEY_SIMPLEX,1, (255,0,0), 2, cv.LINE_AA)
+           # Создание объекта MultiPolygon для текущей области (hull_lat_lon)
+        
         hull_lat_lon = []
         for point in hull:
-            print(point)
+            
             x=point[0][0]
             y=point[0][1]
             lat, lon = image_point_to_map(x, y, point1[0], point1[1], point2[0], point2[1], width, height)
@@ -512,12 +520,14 @@ def main2f(pathtoimg,outpath,point1,point2):
 
        # Создание объекта MultiPolygon для текущей области (hull_lat_lon)
         coordinates = [[lon, lat] for lon, lat in hull_lat_lon]
-      
+        # создаем объект FeatureCollection, который будет содержать все Feature-объекты
+        
+        
         polygon = {
             "type": "Feature",
             "geometry": {
-                "type": "LineString",
-                "coordinates": coordinates
+                "type": "Polygon",
+                "coordinates": [coordinates]
             },
             "properties": {
                 "name": brr
@@ -539,8 +549,9 @@ def main2f(pathtoimg,outpath,point1,point2):
     # Преобразование объекта FeatureCollection в GEOJson-строку
     geojson_str = geojson.dumps(feature_collection)
     
-    
-    return geojson_str #!!!!!!!!!!! GEOJSON STRING 
     # сохранить картинкой в путь на выход!!!!!!!!!!!
-    # plt.imshow(my_photohel3)
-    # plt.show()
+    
+    plt.imshow(my_photohel3)
+    plt.savefig(outpath, bbox_inches='tight')
+    return statistics.mean(pp),geojson_str
+
