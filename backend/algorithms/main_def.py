@@ -1,4 +1,5 @@
 from math import atan2, pi
+import statistics
 import numpy as np
 import pandas as pd
 import cv2 as cv
@@ -266,7 +267,7 @@ def mainf(pathtoimg,outpath):
         for indsp in i:
             hpp.append(contours[indsp])
             brr = br[indsp] #!!!!!!!!титул для полигона
-        
+        pp.append(brr)
         contours_combined = np.vstack(hpp)
         hull = cv.convexHull(contours_combined)# точки контура полигона!!!!!!!!!
         cv.drawContours(my_photohel3,[hull],-1,(0,0,255),2)
@@ -277,7 +278,9 @@ def mainf(pathtoimg,outpath):
         my_photohel3 = cv.putText(my_photohel3, str(brr) ,(cx, cy), cv.FONT_HERSHEY_SIMPLEX,1, (255,0,0), 2, cv.LINE_AA)
     
     # сохранить картинкой в путь на выход!!!!!!!!!!!
-    # plt.imshow(my_photohel3)ыы
+    plt.imshow(my_photohel3)
     plt.savefig(outpath, bbox_inches='tight')
+    return statistics.mean(pp)
 
+#print(mainf(r'C:\Users\loinos\Desktop\референсы города освещение\10.jpg',r'C:\Users\loinos\Desktop\референсы города освещение\ansss.png'))
 #def main2f(pathtoimg, pathtosaveimg, point1cord = (долгота,широта),point2cord = (долгота,широта))
