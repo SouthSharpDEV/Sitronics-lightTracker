@@ -39,7 +39,7 @@ export default function BasicTable() {
   };
 
   const fetchData = async () => {
-    const response = await axios.get('http://localhost:8000/');
+    const response = await axios.get('https://illumination.geryon.space/api/');
     const fetchedData = response.data;
     const rowsData = fetchedData.map((data) =>
       createData(data.id, data.createdAt, data.X, data.Y, data.lightGrade, data.fileName)
@@ -52,7 +52,7 @@ export default function BasicTable() {
   }, []);
 
   const downloadButtonHandler = async (imageName) => {
-    let url = `http://localhost:8000/media/?imageName=${imageName}`;
+    let url = `https://illumination.geryon.space/api/media/?imageName=${imageName}`;
     saveAs(url, 'Twitter-logo');
   };
 

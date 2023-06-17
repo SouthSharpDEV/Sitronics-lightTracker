@@ -23,7 +23,7 @@ export const HomePage:() => React.JSX.Element = (): React.JSX.Element => {
     
             const response = await axios({
                 method: "post",
-                url: "http://localhost:8000/uploadfile",
+                url: "https://illumination.geryon.space/api/uploadfile",
                 data: formData,
                 headers: { "Content-Type": "multipart/form-data" },
             });
