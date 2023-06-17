@@ -29,7 +29,7 @@ async def read_root():
 
 @app.get('/media/')
 async def getMedia(imageName:str):
-    return FileResponse(path='./result/final_{}'.format(imageName), filename=imageName, media_type='image/jpeg')
+    return FileResponse(path='./result/{}'.format(imageName), filename=imageName, media_type='image/jpeg')
 
 @app.get('/test')
 async def getMedia():
@@ -44,5 +44,20 @@ async def create_upload_file(file: UploadFile, coordX: List[str], coordY: List[s
         content = await file.read()
         await out_file.write(content)
     mainf('./raw/{}'.format(file.filename), './result/final_{}'.format(file.filename))
+    my_file = open("./resultMeta/{}.json".format(file.filename), "w+")
+
+    import json
+
+    data = {
+        "id": 1,
+        "createdAt": "2023-06-1423:01:35.060Z",
+        "X": "45.000555040404040",
+        "Y": "42.00055504",
+        "lightGrade": 8,
+        "fileName": 'final_{}'.format(file.filename)
+        }
+    json_string = json.dumps(data)
+    my_file.write(json_string)
+    my_file.close()
 
     return {"Result": "OK"}
