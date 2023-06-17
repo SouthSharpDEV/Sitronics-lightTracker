@@ -37,7 +37,7 @@ async def getMedia():
 
  
 
-@app.post("/uploadfile/")
+@app.post("/uploadfile")
 async def create_upload_file(file: UploadFile, coordX: List[str], coordY: List[str]):
     print(coordX)
     async with aiofiles.open('./raw/{0}'.format(file.filename), 'wb') as out_file:
