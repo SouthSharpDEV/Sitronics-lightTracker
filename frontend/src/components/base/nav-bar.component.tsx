@@ -105,11 +105,9 @@ export default function NavBar(props: Props) {
           {drawer}
         </Drawer>
       </Box>
-      <Box component="main" style={{ backgroundColor: '#111318'}}>
+      <Box component="main" style={{ backgroundColor: '#111318', margin: 'auto'}}>
         <Toolbar />
-            <div style={{ backgroundColor: '#111318'}}>
             {props.component}
-            </div>
       </Box>
       <Typography style={{ color: '#8F8F8F', fontSize: '14px', marginBottom: '15px', bottom: 20, position: 'absolute', textAlign: 'center' }}>Сервис разработан командой “SouthSharpe” ДГТУ</Typography>
     </Box>

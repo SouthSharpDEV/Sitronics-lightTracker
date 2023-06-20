@@ -5,11 +5,11 @@ import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import TextField from '@mui/material/TextField';
 
 export const HomePage:() => React.JSX.Element = (): React.JSX.Element => {
-    const [x1, setx1] = useState<String>()
-    const [x2, setx2] = useState<String>()
+    const [x1, setx1] = useState<String | null>(null)
+    const [x2, setx2] = useState<String | null>(null)
 
-    const [y1, sety1] = useState<String>()
-    const [y2, sety2] = useState<String>()
+    const [y1, sety1] = useState<String | null>(null)
+    const [y2, sety2] = useState<String | null>(null)
 
     const [selectedFile, setSelectedFile] = useState<File>();
 
@@ -17,13 +17,23 @@ export const HomePage:() => React.JSX.Element = (): React.JSX.Element => {
     const handleChange = async () => {
         const formData = new FormData();
         if (selectedFile) {
+            if (x1 && x2 && y1 && y2) {
+                formData.append('file', selectedFile)
+        
+                const response = await axios({
+                    method: "post",
+                    url: "http://localhost:8000/coordinates",
+                    data: formData,
+                    headers: { "Content-Type": "multipart/form-data" },
+                });
+            }
             formData.append('file', selectedFile)
             formData.append('coordX', [x1, x2].toString())
             formData.append('coordY', [y1, y2].toString())
     
             const response = await axios({
                 method: "post",
-                url: "https://illumination.geryon.space/api/uploadfile",
+                url: "http://localhost:8000/noCoordinates",
                 data: formData,
                 headers: { "Content-Type": "multipart/form-data" },
             });

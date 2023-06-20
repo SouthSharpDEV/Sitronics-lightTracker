@@ -39,7 +39,7 @@ export default function BasicTable() {
   };
 
   const fetchData = async () => {
-    const response = await axios.get('https://illumination.geryon.space/api/');
+    const response = await axios.get('http://localhost:8000/');
     const fetchedData = response.data;
     const rowsData = fetchedData.map((data) =>
       createData(data.id, data.createdAt, data.X, data.Y, data.lightGrade, data.fileName)
@@ -52,16 +52,29 @@ export default function BasicTable() {
   }, []);
 
   const downloadButtonHandler = async (imageName) => {
-    let url = `https://illumination.geryon.space/api/media/?imageName=${imageName}`;
+    let url = `http://localhost:8000/media/?imageName=${imageName}`;
     saveAs(url, 'Twitter-logo');
   };
+
+  const downloadJSONHandler = async (imageName) => {
+    let url = `http://localhost:8000/downloadJson/?imageName=${imageName}`;
+    const data = await axios.get(url)
+    const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
+      JSON.stringify(data.data)
+    )}`;
+    const link = document.createElement("a");
+    link.href = jsonString;
+    link.download = "data.json";
+
+    link.click();
+  }
 
   if (data.length === 0) {
     return <h1>Loading...</h1>;
   }
 
   return (
-    <TableContainer component={Paper} style={{ backgroundColor: '#111318' }}>
+    <TableContainer component={Paper} style={{  backgroundColor: '#111318' }}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
@@ -82,7 +95,8 @@ export default function BasicTable() {
               Оценка
             </TableCell>
             <TableCell align="right" style={{ color: 'white' }}></TableCell>
-            <TableCell align="right" style={{ color: 'white' }}></TableCell>
+            <TableCell align="right" style={{ color: 'white' }}>Скачать изображение</TableCell>
+            <TableCell align="right" style={{ color: 'white' }}>Скачать geoJSON</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -126,27 +140,36 @@ export default function BasicTable() {
                   startIcon={<DownloadIcon />}
                 />
               </TableCell>
+              <TableCell style={{ color: 'white' }} align="right">
+                <Button
+                  onClick={() => downloadJSONHandler(row.fileName)}
+                  variant="contained"
+                  style={{ backgroundColor: '#760EDE' }}
+                  startIcon={<DownloadIcon />}
+                />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
       {selectedFile && (
-        <CustomAlert fileName={selectedFile} onClose={closeAlert} />
+        <CustomAlert fileName={selectedFile} onClose={closeAlert}/>
       )}
     </TableContainer>
   );
 }
 
-function CustomAlert({ fileName, onClose }:any) {
+function CustomAlert({ fileName, onClose, lightGrade }:any) {
   return (
+    <>
+    <div class="modal-overlay" id="modal-overlay"></div>
     <div className="custom-alert">
       <div className="custom-alert-content">
-        <h2>Оценка освещенности: 10</h2>
-        <div>{/* Your content goes here */}</div>
-        <p>File Name: {fileName}</p>
+        <p>Подробнее: {fileName}</p>
         <img src={`http://localhost:8000/media/?imageName=${fileName}`} />
-        <button onClick={onClose}>Close</button>
+        <span onClick={onClose} className='close-button' />
       </div>
     </div>
+    </>
   );
 }
