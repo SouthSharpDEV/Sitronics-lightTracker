@@ -39,7 +39,7 @@ export default function BasicTable() {
   };
 
   const fetchData = async () => {
-    const response = await axios.get('http://localhost:8000/');
+    const response = await axios.get('https://illumination.geryon.space/api/');
     const fetchedData = response.data;
     const rowsData = fetchedData.map((data) =>
       createData(data.id, data.createdAt, data.X, data.Y, data.lightGrade, data.fileName)
@@ -52,12 +52,12 @@ export default function BasicTable() {
   }, []);
 
   const downloadButtonHandler = async (imageName) => {
-    let url = `http://localhost:8000/media/?imageName=${imageName}`;
+    let url = `https://illumination.geryon.space/api/media/?imageName=${imageName}`;
     saveAs(url, 'Twitter-logo');
   };
 
   const downloadJSONHandler = async (imageName) => {
-    let url = `http://localhost:8000/downloadJson/?imageName=${imageName}`;
+    let url = `https://illumination.geryon.space/api/downloadJson/?imageName=${imageName}`;
     const data = await axios.get(url)
     const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
       JSON.stringify(data.data)
@@ -166,7 +166,7 @@ function CustomAlert({ fileName, onClose, lightGrade }:any) {
     <div className="custom-alert">
       <div className="custom-alert-content">
         <p>Подробнее: {fileName}</p>
-        <img src={`http://localhost:8000/media/?imageName=${fileName}`} />
+        <img src={`https://illumination.geryon.space/api/media/?imageName=${fileName}`} />
         <span onClick={onClose} className='close-button' />
       </div>
     </div>

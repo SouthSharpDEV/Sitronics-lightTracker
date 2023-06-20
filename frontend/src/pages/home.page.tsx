@@ -22,7 +22,7 @@ export const HomePage:() => React.JSX.Element = (): React.JSX.Element => {
         
                 const response = await axios({
                     method: "post",
-                    url: "http://localhost:8000/coordinates",
+                    url: "https://illumination.geryon.space/api/coordinates",
                     data: formData,
                     headers: { "Content-Type": "multipart/form-data" },
                 });
@@ -33,7 +33,7 @@ export const HomePage:() => React.JSX.Element = (): React.JSX.Element => {
     
             const response = await axios({
                 method: "post",
-                url: "http://localhost:8000/noCoordinates",
+                url: "https://illumination.geryon.space/api/noCoordinates",
                 data: formData,
                 headers: { "Content-Type": "multipart/form-data" },
             });
