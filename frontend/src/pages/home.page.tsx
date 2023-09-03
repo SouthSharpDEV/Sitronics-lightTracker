@@ -1,16 +1,20 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Typography, Button } from "@mui/material";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
-import TextField from "@mui/material/TextField";
 import Welcome from "../components/Welcome";
 
-export const HomePage: () => React.JSX.Element = (): React.JSX.Element => {
-  const [x1, setx1] = useState<String | null>(null);
-  const [x2, setx2] = useState<String | null>(null);
+import "../styles/home.css";
 
-  const [y1, sety1] = useState<String | null>(null);
-  const [y2, sety2] = useState<String | null>(null);
+interface HomePageProps {
+  isStarted: boolean;
+  setIsStarted: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const HomePage: React.FC<HomePageProps> = ({ isStarted, setIsStarted }) => {
+  const [x1, setx1] = useState<string>("");
+  const [x2, setx2] = useState<string>("");
+  const [y1, sety1] = useState<string>("");
+  const [y2, sety2] = useState<string>("");
 
   const [selectedFile, setSelectedFile] = useState<File>();
 
@@ -45,67 +49,83 @@ export const HomePage: () => React.JSX.Element = (): React.JSX.Element => {
   };
 
   return (
-    <div style={{ marginTop: "50px" }}>
-      <Welcome />
-      <Typography style={{ color: "white", fontSize: "28px", marginBottom: "30px" }}>
-        Определение освещеннности
-      </Typography>
-      <Typography style={{ color: "white", fontSize: "20px", marginBottom: "20px" }}>
-        Загрузить фотографию
-      </Typography>
-      <Button
-        component="label"
-        variant="contained"
-        style={{ width: "154px", backgroundColor: "#760EDE", marginBottom: "20px" }}
-        endIcon={<AddAPhotoIcon />}>
+    <div className="container">
+      {!isStarted && <Welcome start={() => setIsStarted(true)} />}
+
+      <h1 className="title">Определение освещеннности</h1>
+      <p className="second-title">Загрузить фотографию</p>
+
+      <div>
         <input
+          id="upload-photo"
           type="file"
           // @ts-ignore
           onChange={(e) => onFileInput(e.target.files)}
           hidden
-        />
-      </Button>
-      <Typography style={{ color: "white", fontSize: "20px", marginBottom: "15px" }}>
-        Координаты снимка
-      </Typography>
+        ></input>
+        <label className="upload-file-btn" htmlFor="upload-photo">
+          <AddAPhotoIcon style={{ height: 50, width: 50 }} />
+        </label>
+      </div>
+
+      <p className="second-title coords-title">Координаты снимка</p>
       <div style={{ marginBottom: "15px" }}>
-        <TextField
-          onChange={(e) => setx1(e.target.value)}
-          id="outlined-basic"
-          label="X координата"
-          variant="outlined"
-          style={{ backgroundColor: "#FFFFFF" }}
-        />
-        <TextField
-          onChange={(e) => sety1(e.target.value)}
-          id="outlined-basic"
-          label="Y координата"
-          variant="outlined"
-          style={{ backgroundColor: "#FFFFFF" }}
-        />
+        <div className="row">
+          <div className="input-wrapper">
+            <input
+              value={x1}
+              onChange={({ target }) => setx1(target.value)}
+              type="text"
+              id="input-x-1"
+              required
+            ></input>
+            <label htmlFor="input-x-1" className="placeholder">
+              X координата
+            </label>
+          </div>
+          <div className="input-wrapper">
+            <input
+              value={y1}
+              onChange={({ target }) => sety1(target.value)}
+              type="text"
+              id="input-y-1"
+              required
+            ></input>
+            <label htmlFor="input-y-1" className="placeholder">
+              Y координата
+            </label>
+          </div>
+        </div>
+        <div className="row">
+          <div className="input-wrapper">
+            <input
+              value={x2}
+              onChange={({ target }) => setx2(target.value)}
+              type="text"
+              id="input-x-2"
+              required
+            ></input>
+            <label htmlFor="input-x-2" className="placeholder">
+              X координата
+            </label>
+          </div>
+          <div className="input-wrapper">
+            <input
+              value={y2}
+              onChange={({ target }) => sety2(target.value)}
+              type="text"
+              id="input-y-2"
+              required
+            ></input>
+            <label htmlFor="input-y-2" className="placeholder">
+              Y координата
+            </label>
+          </div>
+        </div>
       </div>
-      <div>
-        <TextField
-          onChange={(e) => setx2(e.target.value)}
-          id="outlined-basic"
-          label="X координата"
-          variant="outlined"
-          style={{ backgroundColor: "#FFFFFF" }}
-        />
-        <TextField
-          onChange={(e) => sety2(e.target.value)}
-          id="outlined-basic"
-          label="Y координата"
-          variant="outlined"
-          style={{ backgroundColor: "#FFFFFF" }}
-        />
-      </div>
-      <Button
-        variant="contained"
-        style={{ width: "154px", backgroundColor: "#760EDE", marginTop: "30px" }}
-        onClick={() => handleChange()}>
+      <button className="send-btn" onClick={() => handleChange()}>
         Отправить
-      </Button>
+      </button>
     </div>
   );
 };
