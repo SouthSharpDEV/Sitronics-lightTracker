@@ -3,7 +3,7 @@ import axios from "axios";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import Welcome from "../components/Welcome";
 
-import { toast, ToastContainer } from "react-toastify";
+import { toast, ToastContainer, ToastOptions } from "react-toastify";
 
 import "../styles/home.css";
 
@@ -11,6 +11,17 @@ interface HomePageProps {
   isStarted: boolean;
   setIsStarted: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+const TOAST_OPTIONS = {
+  position: "top-right",
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: "dark",
+} as ToastOptions;
 
 export const HomePage: React.FC<HomePageProps> = ({ isStarted, setIsStarted }) => {
   const [x1, setx1] = useState<string>("");
@@ -22,6 +33,9 @@ export const HomePage: React.FC<HomePageProps> = ({ isStarted, setIsStarted }) =
 
   const [selectedFile, setSelectedFile] = useState<File>();
 
+  const failedToast = () => toast.error("Ошибка", TOAST_OPTIONS);
+  const successToast = () => toast.success("Успешно", TOAST_OPTIONS);
+
   const handleChange = async () => {
     const formData = new FormData();
     if (selectedFile) {
@@ -32,13 +46,21 @@ export const HomePage: React.FC<HomePageProps> = ({ isStarted, setIsStarted }) =
         formData.append("coordY", [y1, y2].toString());
         console.log(formData);
 
-        const response = await axios({
+        await axios({
           method: "post",
           url: "https://illumination.geryon.space/api/coordinates",
           // "https://illumination.geryon.space/api/coordinates",
           data: formData,
           headers: { "Content-Type": "multipart/form-data" },
-        });
+        })
+          .then(({ status }) => {
+            if (status === 200) {
+              successToast();
+            }
+          })
+          .catch(() => {
+            failedToast();
+          });
       }
       formData.append("file", selectedFile);
       formData.append("coordX", [x1, x2].toString());
@@ -54,29 +76,11 @@ export const HomePage: React.FC<HomePageProps> = ({ isStarted, setIsStarted }) =
       })
         .then(({ status }) => {
           if (status === 200) {
-            toast.success("Успех", {
-              position: "top-right",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "dark",
-            });
+            successToast();
           }
         })
         .catch(() => {
-          toast.error("Ошибка", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
+          failedToast();
         });
     }
   };
