@@ -23,21 +23,30 @@ export const HomePage: React.FC<HomePageProps> = ({ isStarted, setIsStarted }) =
     if (selectedFile) {
       if (x1 && x2 && y1 && y2) {
         formData.append("file", selectedFile);
+        formData.append("file", selectedFile);
+        formData.append("coordX", [x1, x2].toString());
+        formData.append("coordY", [y1, y2].toString());
+        console.log(formData)
+
 
         const response = await axios({
           method: "post",
-          url: "https://illumination.geryon.space/api/coordinates",
+          url: 'https://illumination.geryon.space/api/coordinates',
+          // "https://illumination.geryon.space/api/coordinates",
           data: formData,
           headers: { "Content-Type": "multipart/form-data" },
         });
+
       }
       formData.append("file", selectedFile);
       formData.append("coordX", [x1, x2].toString());
       formData.append("coordY", [y1, y2].toString());
+      console.log(formData)
 
       const response = await axios({
         method: "post",
-        url: "https://illumination.geryon.space/api/noCoordinates",
+        url: 'https://illumination.geryon.space/api/noCoordinates',
+        // url: "https://illumination.geryon.space/api/noCoordinates",
         data: formData,
         headers: { "Content-Type": "multipart/form-data" },
       });
