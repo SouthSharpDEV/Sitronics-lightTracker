@@ -113,3 +113,7 @@ input:is(:focus, :valid) + .placeholder {
 .send-btn:hover {
   box-shadow: #31e981 0px 0px 20px;
 }
+
+.preview-img {
+  max-height: 300px;
+}

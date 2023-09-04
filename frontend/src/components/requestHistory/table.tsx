@@ -15,7 +15,14 @@ import axios from "axios";
 
 import "./styles.css";
 
-function createData(id: number, createdAt: string, X: string[], Y: string[], lightGrade: number, fileName: string) {
+function createData(
+  id: number,
+  createdAt: string,
+  X: string[],
+  Y: string[],
+  lightGrade: number,
+  fileName: string
+) {
   return { id, createdAt, X, Y, lightGrade, fileName };
 }
 
@@ -52,7 +59,9 @@ export default function BasicTable() {
   const downloadJSONHandler = async (imageName) => {
     let url = `https://illumination.geryon.space/api/downloadJson/?imageName=${imageName}`;
     const data = await axios.get(url);
-    const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(JSON.stringify(data.data))}`;
+    const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
+      JSON.stringify(data.data)
+    )}`;
     const link = document.createElement("a");
     link.href = jsonString;
     link.download = "data.json";
@@ -62,7 +71,8 @@ export default function BasicTable() {
 
   if (data.length === 0) {
     return (
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "85vh" }}>
+      <div
+        style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "85vh" }}>
         <h1>Loading...</h1>
       </div>
     );
@@ -122,9 +132,8 @@ export default function BasicTable() {
               <TableCell style={{ color: "white" }} align="right">
                 <Button
                   variant="contained"
-                  style={{ backgroundColor: "#31e981" }}
-                  onClick={() => openAlert(row.fileName)}
-                >
+                  style={{ backgroundColor: "#31e981", color: "#111318" }}
+                  onClick={() => openAlert(row.fileName)}>
                   Подробнее
                 </Button>
               </TableCell>
@@ -132,7 +141,7 @@ export default function BasicTable() {
                 <Button
                   onClick={() => downloadButtonHandler(row.fileName)}
                   variant="contained"
-                  style={{ backgroundColor: "#31e981" }}
+                  style={{ backgroundColor: "#31e981", color: "#111318" }}
                   startIcon={<DownloadIcon />}
                 />
               </TableCell>
@@ -140,7 +149,7 @@ export default function BasicTable() {
                 <Button
                   onClick={() => downloadJSONHandler(row.fileName)}
                   variant="contained"
-                  style={{ backgroundColor: "#31e981" }}
+                  style={{ backgroundColor: "#31e981", color: "#111318" }}
                   startIcon={<DownloadIcon />}
                 />
               </TableCell>
