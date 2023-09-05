@@ -78,6 +78,12 @@ export default function BasicTable() {
     );
   }
 
+  const formatDate = (dateStr) => {
+    const [date, time] = new Date().toLocaleString("ru-RU").split(", ");
+
+    return { date, time };
+  };
+
   return (
     <TableContainer component={Paper} style={{ backgroundColor: "#111318" }}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -109,16 +115,16 @@ export default function BasicTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row) => (
-            <TableRow key={row.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+          {data.map((row, index) => (
+            <TableRow key={index} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
               <TableCell component="th" scope="row" style={{ color: "white" }}>
-                {row.id}
+                {index}
               </TableCell>
               <TableCell style={{ color: "white" }} align="right">
-                {row.id}
+                {formatDate(row.createdAt).date}
               </TableCell>
               <TableCell style={{ color: "white" }} align="right">
-                {row.createdAt}
+                {formatDate(row.createdAt).time}
               </TableCell>
               <TableCell style={{ color: "white" }} align="right">
                 {row.X}
@@ -167,8 +173,8 @@ function CustomAlert({ fileName, onClose, lightGrade }: any) {
     <>
       <div class="modal-overlay" id="modal-overlay"></div>
       <div className="custom-alert">
-        <div className="custom-alert-content">
-          <p>Подробнее: {fileName}</p>
+        <div className="custom-alert-content" style={{ padding: 15 }}>
+          <p style={{ marginBottom: 15 }}>Подробнее: {fileName}</p>
           <img src={`https://illumination.geryon.space/api/media/?imageName=${fileName}`} />
           <span onClick={onClose} className="close-button" />
         </div>
