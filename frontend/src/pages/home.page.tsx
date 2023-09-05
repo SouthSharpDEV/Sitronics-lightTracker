@@ -32,6 +32,7 @@ export const HomePage: React.FC<HomePageProps> = ({ isStarted, setIsStarted }) =
   const notify = () => toast("Успех");
 
   const [selectedFile, setSelectedFile] = useState<File>();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const failedToast = () => toast.error("Ошибка", TOAST_OPTIONS);
   const successToast = () => toast.success("Успешно", TOAST_OPTIONS);
@@ -40,6 +41,7 @@ export const HomePage: React.FC<HomePageProps> = ({ isStarted, setIsStarted }) =
     const formData = new FormData();
     if (selectedFile) {
       if (x1 && x2 && y1 && y2) {
+        setIsLoading(true);
         formData.append("file", selectedFile);
         formData.append("file", selectedFile);
         formData.append("coordX", [x1, x2].toString());
@@ -60,6 +62,9 @@ export const HomePage: React.FC<HomePageProps> = ({ isStarted, setIsStarted }) =
           })
           .catch(() => {
             failedToast();
+          })
+          .finally(() => {
+            setIsLoading(false);
           });
       }
       formData.append("file", selectedFile);
@@ -67,10 +72,10 @@ export const HomePage: React.FC<HomePageProps> = ({ isStarted, setIsStarted }) =
       formData.append("coordY", [y1, y2].toString());
       console.log(formData);
 
-      axios({
+      setIsLoading(true);
+      await axios({
         method: "post",
         url: "https://illumination.geryon.space/api/noCoordinates",
-        // url: "https://illumination.geryon.space/api/noCoordinates",
         data: formData,
         headers: { "Content-Type": "multipart/form-data" },
       })
@@ -81,6 +86,9 @@ export const HomePage: React.FC<HomePageProps> = ({ isStarted, setIsStarted }) =
         })
         .catch(() => {
           failedToast();
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
   };
@@ -111,7 +119,8 @@ export const HomePage: React.FC<HomePageProps> = ({ isStarted, setIsStarted }) =
             type="file"
             // @ts-ignore
             onChange={(e) => onFileInput(e.target.files)}
-            hidden></input>
+            hidden
+          ></input>
           <label className="upload-file-btn" htmlFor="upload-photo">
             <AddAPhotoIcon style={{ height: 50, width: 50 }} />
           </label>
@@ -127,7 +136,8 @@ export const HomePage: React.FC<HomePageProps> = ({ isStarted, setIsStarted }) =
               onChange={({ target }) => setx1((prev) => numValidate(target.value, prev))}
               type="text"
               id="input-x-1"
-              required></input>
+              required
+            ></input>
             <label htmlFor="input-x-1" className="placeholder">
               X координата
             </label>
@@ -138,7 +148,8 @@ export const HomePage: React.FC<HomePageProps> = ({ isStarted, setIsStarted }) =
               onChange={({ target }) => sety1((prev) => numValidate(target.value, prev))}
               type="text"
               id="input-y-1"
-              required></input>
+              required
+            ></input>
             <label htmlFor="input-y-1" className="placeholder">
               Y координата
             </label>
@@ -151,7 +162,8 @@ export const HomePage: React.FC<HomePageProps> = ({ isStarted, setIsStarted }) =
               onChange={({ target }) => setx2((prev) => numValidate(target.value, prev))}
               type="text"
               id="input-x-2"
-              required></input>
+              required
+            ></input>
             <label htmlFor="input-x-2" className="placeholder">
               X координата
             </label>
@@ -162,7 +174,8 @@ export const HomePage: React.FC<HomePageProps> = ({ isStarted, setIsStarted }) =
               onChange={({ target }) => sety2((prev) => numValidate(target.value, prev))}
               type="text"
               id="input-y-2"
-              required></input>
+              required
+            ></input>
             <label htmlFor="input-y-2" className="placeholder">
               Y координата
             </label>
@@ -184,6 +197,24 @@ export const HomePage: React.FC<HomePageProps> = ({ isStarted, setIsStarted }) =
         pauseOnHover
         theme="light"
       />
+      {isLoading && (
+        <div className="loader">
+          <div className="lds-default">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
