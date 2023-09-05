@@ -39,7 +39,7 @@ export default function BasicTable() {
   };
 
   const fetchData = async () => {
-    const response = await axios.get("http://illumination.geryon.space/api/");
+    const response = await axios.get("https://illumination.geryon.space/api/");
     const fetchedData = response.data;
     const rowsData = fetchedData.map((data) =>
       createData(data.id, data.createdAt, data.X, data.Y, data.lightGrade, data.fileName)
