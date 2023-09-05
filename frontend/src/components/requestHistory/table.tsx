@@ -85,8 +85,15 @@ export default function BasicTable() {
   };
 
   return (
-    <TableContainer component={Paper} style={{ backgroundColor: "#111318" }}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+    <TableContainer
+      component={Paper}
+      style={{
+        backgroundColor: "#111318",
+        marginTop: 20,
+        display: "flex",
+        justifyContent: "center",
+      }}>
+      <Table sx={{ minWidth: 650, maxWidth: "96vw" }} aria-label="simple table">
         <TableHead>
           <TableRow>
             <TableCell style={{ color: "white" }}>ID</TableCell>
@@ -118,7 +125,7 @@ export default function BasicTable() {
           {data.map((row, index) => (
             <TableRow key={index} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
               <TableCell component="th" scope="row" style={{ color: "white" }}>
-                {index}
+                {index + 1}
               </TableCell>
               <TableCell style={{ color: "white" }} align="right">
                 {formatDate(row.createdAt).date}
@@ -172,8 +179,8 @@ function CustomAlert({ fileName, onClose, lightGrade }: any) {
   return (
     <>
       <div class="modal-overlay" id="modal-overlay"></div>
-      <div className="custom-alert">
-        <div className="custom-alert-content" style={{ padding: 15 }}>
+      <div className="custom-alert" style={{ borderRadius: 20 }}>
+        <div className="custom-alert-content" style={{ padding: 15, borderRadius: 20 }}>
           <p style={{ marginBottom: 15 }}>Подробнее: {fileName}</p>
           <img src={`https://illumination.geryon.space/api/media/?imageName=${fileName}`} />
           <span onClick={onClose} className="close-button" />
