@@ -295,7 +295,7 @@ def main2f(pathtoimg,outpath,point1,point2):
 
 
     my_photo = my_photo1.copy()
-    print( my_photo.shape[0]*my_photo.shape[1])
+    # print( my_photo.shape[0]*my_photo.shape[1])
     for i in range(0, my_photo.shape[0]): # We go over rows number 
         for j in range(0, my_photo.shape[1]):
             hc = rgbToHSV(my_photo[i,j][0],my_photo[i,j][1],my_photo[i,j][2])
@@ -520,6 +520,7 @@ def main2f(pathtoimg,outpath,point1,point2):
 
        # Создание объекта MultiPolygon для текущей области (hull_lat_lon)
         coordinates = [[lon, lat] for lon, lat in hull_lat_lon]
+        coordinates.append(coordinates[0])
         # создаем объект FeatureCollection, который будет содержать все Feature-объекты
         
         
@@ -553,5 +554,8 @@ def main2f(pathtoimg,outpath,point1,point2):
     
     plt.imshow(my_photohel3)
     plt.savefig(outpath, bbox_inches='tight')
+    # print(geojson_str)
     return statistics.mean(pp),geojson_str
 
+# main2f(r'C:\Users\coolm\Downloads\tmp.jpg',r'C:\Users\coolm\Downloads\tmp1.jpg',
+#        (47.243956, 39.718495),(47.236604, 39.706176))
