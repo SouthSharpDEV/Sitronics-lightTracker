@@ -7,6 +7,7 @@ import json
 import aiofiles
 from typing import List
 from algorithms.main_def import mainf, main2f
+from datetime import datetime
 
 
 app = FastAPI()
@@ -49,7 +50,7 @@ async def noCoordinatesHandler(file: UploadFile):
 
     data = {
         "id": 1,
-        "createdAt": "2023-06-1423:01:35.060Z",
+        "createdAt": datetime.now(),
         "X": 'NaN',
         "Y": 'NaN',
         "lightGrade": grade,
@@ -77,7 +78,7 @@ async def noCoordinatesHandler(file: UploadFile, coordX: List[str], coordY: List
 
     data = {
         "id": 1,
-        "createdAt": "2023-06-1423:01:35.060Z",
+        "createdAt": datetime.now(),
         "X": 'NaN',
         "Y": 'NaN',
         "lightGrade": resultData[0],
