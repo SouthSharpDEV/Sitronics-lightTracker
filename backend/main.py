@@ -50,7 +50,7 @@ async def noCoordinatesHandler(file: UploadFile):
 
     data = {
         "id": 1,
-        "createdAt": datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+        "createdAt": "2023-09-14T08:50:38.761Z",
         "X": 'NaN',
         "Y": 'NaN',
         "lightGrade": grade,
@@ -78,9 +78,9 @@ async def noCoordinatesHandler(file: UploadFile, coordX: List[str], coordY: List
 
     data = {
         "id": 1,
-        "createdAt": datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-        "X": 'NaN',
-        "Y": 'NaN',
+        "createdAt": "2023-09-14T08:50:38.761Z",
+        "X": coordX[0],
+        "Y": coordY[0],
         "lightGrade": resultData[0],
         "fileName": 'final_{}'.format(file.filename)
         }
