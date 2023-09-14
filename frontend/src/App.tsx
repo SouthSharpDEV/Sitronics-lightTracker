@@ -1,29 +1,36 @@
-import React from 'react';
-import { RouterProvider } from 'react-router-dom';
+import React from "react";
+import { Link, Route, Routes } from "react-router-dom";
+import { HomePage } from "./pages/home.page";
+import { RequestHistoryPage } from "./pages/request-history.page";
+import HistoryIcon from "@mui/icons-material/History";
 
-import logo from './logo.svg';
-import './App.css';
+import HomeIcon from "@mui/icons-material/Home";
 
-import { router } from './router';
+import "react-toastify/dist/ReactToastify.css";
+
+import "./App.css";
 
 function App() {
+  const [isStarted, setIsStarted] = React.useState(false);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <>
+      <header>
+        <Link className="nav-btn" to={"/"}>
+          <HomeIcon />
+          Главная
+        </Link>
+        <div className="line" />
+        <Link className="nav-btn" to={"/requestsHistory"}>
+          <HistoryIcon />
+          История запросов
+        </Link>
       </header>
-    </div>
+      <Routes>
+        <Route path="/" element={<HomePage isStarted={isStarted} setIsStarted={setIsStarted} />} />
+        <Route path="/requestsHistory" element={<RequestHistoryPage />} />
+      </Routes>
+    </>
   );
 }
 export default App;
