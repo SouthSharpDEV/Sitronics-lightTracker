@@ -15,7 +15,14 @@ import axios from "axios";
 
 import "./styles.css";
 
-function createData(id: number, createdAt: string, X: string[], Y: string[], lightGrade: number, fileName: string) {
+function createData(
+  id: number,
+  createdAt: string,
+  X: string[],
+  Y: string[],
+  lightGrade: number,
+  fileName: string
+) {
   return { id, createdAt, X, Y, lightGrade, fileName };
 }
 
@@ -34,8 +41,16 @@ export default function BasicTable() {
   const fetchData = async () => {
     const response = await axios.get("https://illumination.geryon.space/api/");
     const fetchedData = response.data;
-    const rowsData = fetchedData.map((data) =>
-      createData(data.id, data.createdAt, data.X, data.Y, data.lightGrade, data.fileName)
+    console.log(fetchData);
+    const rowsData = fetchedData.map((data, index) =>
+      createData(
+        fetchedData.length - index,
+        data.createdAt,
+        data.X,
+        data.Y,
+        data.lightGrade,
+        data.fileName
+      )
     );
     console.log(rowsData.map((item) => item.createdAt));
     setData(rowsData);
@@ -53,7 +68,9 @@ export default function BasicTable() {
   const downloadJSONHandler = async (imageName) => {
     let url = `https://illumination.geryon.space/api/downloadJson/?imageName=${imageName}`;
     const data = await axios.get(url);
-    const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(JSON.stringify(data.data))}`;
+    const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
+      JSON.stringify(data.data)
+    )}`;
     const link = document.createElement("a");
     link.href = jsonString;
     link.download = "data.json";
@@ -63,15 +80,15 @@ export default function BasicTable() {
 
   if (data.length === 0) {
     return (
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "85vh" }}>
+      <div
+        style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "85vh" }}>
         <h1>Loading...</h1>
       </div>
     );
   }
 
   const formatDate = (dateStr) => {
-    const newDateStr = dateStr.slice(0, 10) + " " + dateStr.slice(10);
-    const [date, time] = new Date(newDateStr).toLocaleString("ru-RU").split(", ");
+    const [date, time] = new Date(dateStr).toLocaleString("ru-RU").split(", ");
 
     return { date, time };
   };
@@ -84,8 +101,7 @@ export default function BasicTable() {
         marginTop: 20,
         display: "flex",
         justifyContent: "center",
-      }}
-    >
+      }}>
       <Table sx={{ minWidth: 650, maxWidth: "96vw" }} aria-label="simple table">
         <TableHead>
           <TableRow>
@@ -115,10 +131,10 @@ export default function BasicTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.reverse().map((row, index) => (
+          {data.map((row, index) => (
             <TableRow key={index} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
               <TableCell component="th" scope="row" style={{ color: "white" }}>
-                {data.length - index}
+                {row.id}
               </TableCell>
               <TableCell style={{ color: "white" }} align="right">
                 {formatDate(row.createdAt).date}
@@ -139,8 +155,7 @@ export default function BasicTable() {
                 <Button
                   variant="contained"
                   style={{ backgroundColor: "#31e981", color: "#111318" }}
-                  onClick={() => openAlert(row.fileName)}
-                >
+                  onClick={() => openAlert(row.fileName)}>
                   Подробнее
                 </Button>
               </TableCell>
